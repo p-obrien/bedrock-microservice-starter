@@ -8,10 +8,7 @@ module "eks" {
 
   cluster_name    = "eks-cluster"
   cluster_version = "1.30"
-  
 
-  # Give the Terraform identity admin access to the cluster
-  # which will allow it to deploy resources into the cluster
   enable_cluster_creator_admin_permissions = true
   cluster_endpoint_public_access           = true
 
@@ -19,8 +16,6 @@ module "eks" {
     coredns = {
       configuration_values = jsonencode({
         tolerations = [
-          # Allow CoreDNS to run on the same nodes as the Karpenter controller
-          # for use during cluster creation when Karpenter nodes do not yet exist
           {
             key    = "karpenter.sh/controller"
             value  = "true"
@@ -41,11 +36,11 @@ module "eks" {
 
     karpenter = {
       instance_types = ["t4g.large"]
-      capacity_type = "SPOT"
-  
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
+      capacity_type  = "SPOT"
+      min_size       = 1
+      max_size       = 3
+      desired_size   = 1
+      ami_type       = "AL2023_ARM_64_STANDARD"
 
       labels = {
         # Used to ensure Karpenter runs on nodes that it does not manage
@@ -53,8 +48,7 @@ module "eks" {
       }
 
       taints = {
-        # The pods that do not tolerate this taint should run on nodes
-        # created by Karpenter
+        # The pods that do not tolerate this taint should run on nodes created by Karpenter
         karpenter = {
           key    = "karpenter.sh/controller"
           value  = "true"
@@ -67,8 +61,7 @@ module "eks" {
   tags = merge(local.tags, {
     # NOTE - if creating multiple security groups with this module, only tag the
     # security group that Karpenter should utilize with the following tag
-    # (i.e. - at most, only one security group should have this tag in your account)
-    "karpenter.sh/discovery" = local.name
+    "karpenter.sh/discovery" = "eks-cluster"
   })
 }
 

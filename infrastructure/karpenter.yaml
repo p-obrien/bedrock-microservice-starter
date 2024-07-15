@@ -8,12 +8,12 @@ spec:
   role: ex-karpenter-mng
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: ex-karpenter-mng
+        karpenter.sh/discovery: eks-cluster
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: ex-karpenter-mng
+        karpenter.sh/discovery: eks-cluster
   tags:
-    karpenter.sh/discovery: ex-karpenter-mng
+    karpenter.sh/discovery: eks-cluster
 ---
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
@@ -35,7 +35,8 @@ spec:
             - "2"
         - key: kubernetes.io/arch
           operator: In
-          values: ["arm64"]
+          values:
+            - arm64
   limits:
     cpu: 1000
   disruption:

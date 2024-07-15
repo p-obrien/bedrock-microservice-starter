@@ -67,7 +67,8 @@ locals {
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
-    Blueprint  = local.name
+    Blueprint  = "eks-cluster"
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
+
   }
 }
