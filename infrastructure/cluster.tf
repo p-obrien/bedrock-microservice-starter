@@ -61,7 +61,7 @@ module "eks" {
   tags = merge(local.tags, {
     # NOTE - if creating multiple security groups with this module, only tag the
     # security group that Karpenter should utilize with the following tag
-    "karpenter.sh/discovery" = "eks-cluster"
+    "karpenter.sh/discovery" = var.cluster_name
   })
 }
 

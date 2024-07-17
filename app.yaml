@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eks-service-account
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bedrock-microservice-starter
+  labels:
+    app: bedrock-microservice-starter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bedrock-microservice-starter
+  template:
+    metadata:
+      labels:
+        app: bedrock-microservice-starter
+    spec:
+      serviceAccountName: eks-service-account
+      containers:
+        - name: bedrock-microservice-starter
+          image: 097324129341.dkr.ecr.ap-southeast-2.amazonaws.com/bedrock-microservice-starter:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+      tolerations:
+      - key: "karpenter.sh/controller"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: bedrock-microservice-starter

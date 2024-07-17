@@ -20,19 +20,14 @@ terraform {
   # }
 }
 
-provider "aws" {
-  region = local.region
-}
-
 # Required for public ECR where Karpenter artifacts are hosted
 provider "aws" {
-  region = "ap-southeast-2"
-  alias  = "sydney"
+  region = var.region
 }
 
-provider "aws"{
+provider "aws" {
   region = "us-east-1"
-  alias = "global"
+  alias  = "global"
 }
 
 provider "helm" {
