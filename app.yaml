@@ -27,11 +27,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-      tolerations:
-      - key: "karpenter.sh/controller"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"
 ---
 apiVersion: v1
 kind: Service
@@ -42,10 +37,10 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 spec:
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 8080
       protocol: TCP
-  type: LoadBalancer
   selector:
     app: bedrock-microservice-starter

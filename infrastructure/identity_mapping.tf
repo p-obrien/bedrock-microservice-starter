@@ -31,3 +31,4 @@ resource "aws_eks_pod_identity_association" "eks_service_account" {
   role_arn        = aws_iam_role.eks-pod-identity.arn
   depends_on = [ module.eks ]
 }
+
