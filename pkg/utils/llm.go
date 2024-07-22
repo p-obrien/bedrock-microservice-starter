@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -14,20 +13,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime/types"
 )
 
-const defaultRegion = "ap-southeast-2"
-
 var brc *bedrockruntime.Client
 
 // const system_prompt = `All replies should be in pirate speak`
 
 func init() {
 
-	region := os.Getenv("AWS_REGION")
-	if region == "" {
-		region = defaultRegion
-	}
-
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}

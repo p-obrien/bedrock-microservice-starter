@@ -48,6 +48,6 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "region"
-    value = "ap-southeast-2"
+    value = var.region
   }
 }

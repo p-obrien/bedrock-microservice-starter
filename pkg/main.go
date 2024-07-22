@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -20,14 +19,14 @@ type Question struct {
 }
 
 // Sample API Key
-// var apiKey string = "test-api-key"
+var apiKey string = "test-api-key"
 var brc *bedrockruntime.Client
 
 const modelID = "anthropic.claude-3-sonnet-20240229-v1:0"
 
 func main() {
 
-	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithSharedConfigProfile("pobrien-playground"), config.WithRegion("ap-southeast-2"))
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,9 +37,13 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	e.Use(middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
+		return key == apiKey, nil
+	}))
+
 	e.POST("/converse", converseHandler)
 
-	if err := e.Start("localhost:8080"); err != http.ErrServerClosed {
+	if err := e.Start(":8080"); err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
 }
@@ -70,7 +73,7 @@ func converseHandler(c echo.Context) error {
 	// Call the Bedrock Converse API
 	output, err := brc.Converse(context.Background(), converseInput)
 	if err != nil {
-		log.Println("Error calling Converse API:", err)
+		log.Fatal("Error calling Converse API:", err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
 	}
 
@@ -85,9 +88,6 @@ func converseHandler(c echo.Context) error {
 	if !ok {
 		return c.String(http.StatusInternalServerError, "Failed to parse response content")
 	}
-
-	// Print the assistant's response to the console (for debugging purposes)
-	fmt.Println(text.Value)
 
 	// Create the assistant's message
 	assistantMsg := types.Message{
