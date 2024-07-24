@@ -1,8 +1,15 @@
 # bedrock-microservice-starter
 Starter template for a Go based Microservice that uses AWS Bedrock 
 
-To get started clone this repository with:
+To get started, clone this repository with:
+```
 git clone https://github.com/p-obrien/bedrock-microservice-starter.git
+```
+
+## Prerequiste
+- Enable Claude Sonnet foundational model in your account
+- Ensure you have terraform installed and configured
+- Ensure your AWS Environment variables are correctly set
 
 ## Deploy EKS Cluster
 Terraform code for deploying an EKS Cluster and setting up EKS Pod Identities can be found in the Infrastructure folder, for details please see the README.md file.
