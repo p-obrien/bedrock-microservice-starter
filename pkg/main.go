@@ -18,7 +18,7 @@ type Question struct {
 	Text string `json:"text"`
 }
 
-// Sample API Key
+// Sample API Key please don't use this in production and consider something more robust
 var apiKey string = "test-api-key"
 var brc *bedrockruntime.Client
 
